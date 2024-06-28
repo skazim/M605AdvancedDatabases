@@ -1,0 +1,208 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Customers {
+  id integer(100) [primary key, increment, not null]
+  name varchar(100)
+  email varchar(100)
+  lastLoginTime datetime
+  password varchar(100)
+  contact varchar(100)
+  address varchar(100)
+  created_at timestamp [default: `NOW()`]
+  indexes {
+    (email)
+  }
+}
+
+Table loginActivity{
+  id integer(100) [primary key, increment, not null]
+  customer_id int
+  loginTime timestamp
+  indexes {
+    (customer_id)
+  }
+  
+}
+Table Products {
+  id integer(100) [primary key, increment, not null]
+  name varchar(100)
+  description varchar(100)
+  price varchar(100)
+  categoryId int
+  tagId integer(100)
+  supp_id integer(100)
+  created_at timestamp
+  indexes {
+    (categoryId)
+    (supp_id)
+  }
+}
+
+Table Supplier {
+  id integer(100) [primary key, increment, not null]
+  name varchar(100)
+  address varchar(100)
+  contact varchar(100)
+  email varchar(100)
+}
+
+Table Orders {
+  id integer(100) [primary key, increment, not null]
+  cust_id integer(100)
+  orderDateTime datetime 
+}
+
+Table category{
+  id integer(100) [primary key, increment, not null]
+  name varchar(100)
+}
+
+Table OrderItems {
+  id integer(100) [primary key, increment, not null]
+  order_Id integer(100)
+  prod_id integer(100)
+  quantity integer(100)
+  price decimal(10,2)
+}
+
+Table Comments{
+  id integer(100) [primary key, increment, not null]
+  comments varchar(100)
+  prod_id integer(100) 
+  cust_id integer(100)
+  commentsDateTime datetime
+  rating int
+  indexes {
+    (prod_id)
+    (cust_id)
+  }
+}
+
+Table ReturnItems {
+  id integer(100) [primary key, increment, not null]
+  orderItemId integer(100)
+  returnDate datetime
+  reason varchar(100)  
+}
+
+Table Payments {
+  id integer(100) [primary key, increment, not null]
+  order_id integer(100)
+  payment_method varchar(100)
+  payment_date datetime
+  payment_status varchar(100)
+  amount decimal(10,2)
+}
+
+Table Shipping {
+  id integer(100) [primary key, increment, not null]
+  order_id integer(100)
+  shipping_address varchar(100)
+  shipping_method varchar(100)
+  shipping_status varchar(100)
+  shipping_date datetime
+}
+
+
+Table Inventory {
+  id integer(100) [primary key, increment, not null]
+  prod_id integer(100)
+  quantity integer(100)
+  last_updated datetime
+}
+
+Table Discounts {
+  id integer(100) [primary key, increment, not null]
+  code varchar(100)
+  amount decimal(10,2)
+  expiration_date datetime
+  description varchar(100)
+}
+
+Table OrderStatus {
+  id integer(100) [primary key, increment, not null]
+  order_id integer(100)
+  status varchar(100)
+  updated_at datetime
+}
+
+Table Tags{
+  id integer(100) [primary key, not null, increment]
+  tagName varchar(100)
+}
+
+Table Notifications {
+  id integer(100) [primary key, increment, not null]
+  customer_id integer(100)
+  message varchar(100)
+  is_read boolean
+  created_at timestamp
+  type varchar(100)
+  indexes {
+    (customer_id)
+    (is_read)
+    (type)
+  }
+}
+
+Table rating{
+  id int [primary key, not null, increment]
+  score varchar(20)
+}
+
+TABLE orderDetails {
+  order_id int 
+  customer_id int
+  order_item_id int 
+  prod_id int
+  Customer_Name varchar
+  orderDateTime datetime
+  Product_Name varchar
+  quantity decimal
+  price decimal
+}
+
+
+Table returnItemDetails{
+  Order_Id int
+  Customer_Name varchar
+  Product_Name varchar
+  Product_Price varchar
+  Reason varchar
+  Order_Date datetime
+  Quantity decimal
+}
+
+
+Ref: "Supplier"."id" < "Products"."supp_id"
+
+Ref: "Orders"."cust_id" < "Customers"."id"
+
+Ref: "OrderItems"."order_Id" < "Orders"."id"
+
+Ref: "OrderItems"."prod_id" < "Products"."id"
+
+Ref: "Comments"."prod_id" < "Products"."id"
+
+Ref: "Comments"."cust_id" < "Customers"."id"
+
+Ref: "ReturnItems"."orderItemId" < "Orders"."id"
+
+Ref: "category"."id" < "Products"."categoryId"
+
+Ref: "Orders"."id" < "Payments"."order_id"
+
+Ref: "Orders"."id" < "Shipping"."order_id"
+
+Ref: "Products"."id" < "Inventory"."prod_id"
+
+Ref: "Orders"."id" < "OrderStatus"."order_id"
+
+Ref: "Customers"."id" < "loginActivity"."customer_id"
+
+Ref: "Tags"."id" < "Products"."tagId"
+
+Ref: "Customers"."id" < "Notifications"."id"
+
+Ref: "rating"."id" < "Comments"."rating"
